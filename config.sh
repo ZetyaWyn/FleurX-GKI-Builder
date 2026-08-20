@@ -5,8 +5,8 @@
 # 1. Project Configuration
 # ==========================================
 KERNEL_NAME="Kitsune-SpiritFox"
-KERNEL_SOURCE="https://github.com/ZetyaWyn/android_kernel_common-5.10"
-KERNEL_BRANCH="android12-5.10"
+KERNEL_SOURCE="https://github.com/project-sm7435/android_kernel_xiaomi_sm7435"
+KERNEL_BRANCH="Staging"
 KBUILD_USER="zerotwo"
 KBUILD_HOST="ZeroTwo"
 TIMEZONE="Asia/Kolkata"
@@ -25,7 +25,7 @@ CLANG_URL="https://github.com/Neutron-Toolchains/clang-build-catalogue/releases/
 # ==========================================
 # 4. GitHub Release Configuration
 # ==========================================
-RELEASE_REPO="zerotwo-alt/Kitsune-SpiritFox-Release"
+RELEASE_REPO="https://github.com/ZetyaWyn/Kitsune-SpiritFox-Release-OSS"
 
 # ==========================================
 # 5. Default Build Options
