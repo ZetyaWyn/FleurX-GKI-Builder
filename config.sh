@@ -5,8 +5,8 @@
 # 1. Project Configuration
 # ==========================================
 KERNEL_NAME="Kitsune-SpiritFox"
-KERNEL_SOURCE="https://github.com/zerotwo-project/android_kernel_xiaomi_sm7435"
-KERNEL_BRANCH="Build"
+KERNEL_SOURCE="https://github.com/ZetyaWyn/android_kernel_common-5.10"
+KERNEL_BRANCH="android12-5.10"
 KBUILD_USER="zerotwo"
 KBUILD_HOST="ZeroTwo"
 TIMEZONE="Asia/Kolkata"
