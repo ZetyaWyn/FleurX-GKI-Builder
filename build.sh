@@ -14,7 +14,7 @@ INPUT_VARIANT=${1:-$DEFAULT_VARIANT}
 RELEASE_TYPE=${2:-$DEFAULT_RELEASE_TYPE}
 
 if [ "$RELEASE_TYPE" == "Release" ]; then
-    VARIANTS=("Vanilla" "KSUN_SUSFS")
+    VARIANTS=("Vanilla" "ReSukiSU_SUSFS")
 else
     VARIANTS=("$INPUT_VARIANT")
 fi
@@ -106,22 +106,28 @@ for VARIANT in "${VARIANTS[@]}"; do
     rm -rf "$OUTDIR"
     mkdir -p "$OUTDIR"
 
-    # KSUN and SUSFS
-if [ "$VARIANT" == "KSUN_SUSFS" ]; then
-    echo "-> Setting up KernelSU-Next and SUSFS..."
-    # Remove existing KSUN
-    for KSUN_PATH in drivers/staging/kernelsu drivers/kernelsu KernelSU KernelSU-Next; do
-        if [[ -d $KSUN_PATH ]]; then
-            echo "Removing existing $KSUN_PATH"
-            KSUN_DIR=$(dirname "$KSUN_PATH")
-            [[ -f "$KSUN_DIR/Kconfig" ]] && sed -i '/kernelsu/d' "$KSUN_DIR/Kconfig"
-            [[ -f "$KSUN_DIR/Makefile" ]] && sed -i '/kernelsu/d' "$KSUN_DIR/Makefile"
-            rm -rf $KSUN_PATH
+    # ReSukiSU and SUSFS
+if [ "$VARIANT" == "ReSukiSU_SUSFS" ]; then
+    echo "-> Setting up ReSukiSU and SUSFS..."
+
+    # Remove existing KernelSU/ReSukiSU
+    for ReSukiSU_PATH in drivers/staging/kernelsu drivers/kernelsu KernelSU; do
+        if [[ -d "$ReSukiSU_PATH" || -L "$ReSukiSU_PATH" ]]; then
+            echo "Removing existing $ReSukiSU_PATH"
+            ReSukiSU_DIR=$(dirname "$ReSukiSU_PATH")
+
+            [[ -f "$ReSukiSU_DIR/Kconfig" ]] && \
+                sed -i '/kernelsu/d' "$ReSukiSU_DIR/Kconfig"
+
+            [[ -f "$ReSukiSU_DIR/Makefile" ]] && \
+                sed -i '/kernelsu/d' "$ReSukiSU_DIR/Makefile"
+
+            rm -rf "$ReSukiSU_PATH"
         fi
     done
 
-    # KernelSU-Next
-    curl -LSs "https://raw.githubusercontent.com/pershoot/KernelSU-Next/refs/heads/dev-susfs/kernel/setup.sh" | bash -s dev-susfs
+    # ReSukiSU
+    curl -LSs "https://raw.githubusercontent.com/ReSukiSU/ReSukiSU/main/kernel/setup.sh" | bash -s main
 
     # SUSFS
     SUSFS_DIR="$WORKDIR/susfs"
