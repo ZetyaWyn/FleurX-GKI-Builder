@@ -121,7 +121,7 @@ if [ "$VARIANT" == "ReSukiSU_SUSFS" ] || [ "$VARIANT" == "KSUN_SUSFS" ]; then
     done
 
     # ReSukiSU
-    curl -LSs "https://raw.githubusercontent.com/ReSukiSU/ReSukiSU/main/kernel/setup.sh" | bash
+    curl -LSs "https://raw.githubusercontent.com/zylhdrXP/ReSukiSU/main/kernel/setup.sh" | bash
 
     # SUSFS
     if [ -d "$WORKDIR/susfs4ksu" ]; then
