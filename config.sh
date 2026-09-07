@@ -20,7 +20,7 @@ ANYKERNEL_BRANCH="gki"
 # ==========================================
 # 3. Toolchain Configuration
 # ==========================================
-CLANG_URL="https://github.com/Neutron-Toolchains/clang-build-catalogue/releases/download/30072026/neutron-clang-30072026.tar.zst"
+CLANG_URL="https://github.com/Neutron-Toolchains/clang-build-catalogue/releases/download/06092026/neutron-clang-06092026.tar.zst"
 
 # ==========================================
 # 4. GitHub Release Configuration
