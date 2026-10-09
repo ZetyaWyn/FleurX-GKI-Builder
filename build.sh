@@ -106,6 +106,10 @@ for VARIANT in "${VARIANTS[@]}"; do
     rm -rf "$OUTDIR"
     mkdir -p "$OUTDIR"
 
+    # NoMount
+    echo "-> Setting up NoMount..."
+    curl https://raw.githubusercontent.com/maxsteeel/nomount/refs/heads/dev/kernel/setup.sh | bash -
+
     # KSUN and SUSFS
 if [ "$VARIANT" == "KSUN_SUSFS" ]; then
     echo "-> Setting up KernelSU-Next and SUSFS..."
@@ -162,6 +166,11 @@ else
     SUSFS_VERSION="None"
 fi
 
+# NoMount config
+cat << EOF >> arch/arm64/configs/$KERNEL_DEFCONFIG
+CONFIG_NOMOUNT=y
+EOF
+
 # Set Localversion
 ./scripts/config --file arch/arm64/configs/$KERNEL_DEFCONFIG --set-str CONFIG_LOCALVERSION "-$KERNEL_NAME/$RELEASE"
 ./scripts/config --file arch/arm64/configs/$KERNEL_DEFCONFIG --disable CONFIG_LOCALVERSION_AUTO
@@ -188,6 +197,7 @@ tg_send_msg "🚀 <b>Build Started</b>
 <b>Kernel:</b> <code>${LINUX_VERSION}</code>
 <b>Branch:</b> <code>${KERNEL_BRANCH}</code>
 <b>Variant:</b> <code>${VARIANT}</code>
+<b>NoMount:</b> <code>Enabled</code>
 <b>Build Type:</b> <code>${RELEASE_TYPE}</code>"
 
 make "${MAKE_ARGS[@]}" $KERNEL_DEFCONFIG
@@ -202,7 +212,8 @@ if [ ! -f "$KERNEL_IMAGE" ]; then
 fi
 
 tg_send_msg "✅ <b>Build Successful!</b>
-<b>Variant:</b> <code>${VARIANT}</code>"
+<b>Variant:</b> <code>${VARIANT}</code>
+<b>NoMount:</b> <code>Enabled</code>"
 
 # AnyKernel Packaging
 cd "$WORKDIR"
@@ -235,6 +246,7 @@ ${HEADER}
 <b>Version:</b> <code>${LINUX_VERSION}</code>
 <b>Branch:</b> <code>${KERNEL_BRANCH}</code>
 <b>Variant:</b> <code>${VARIANT}</code>
+<b>NoMount:</b> <code>Enabled</code>
 <b>SuSFS:</b> <code>${SUSFS_VERSION}</code>
 <b>Compiler:</b> <code>${COMPILER_STRING}</code>
 EOF
@@ -259,6 +271,7 @@ if [ "$RELEASE_TYPE" == "Release" ] && command -v gh &> /dev/null && [ -n "$GH_T
 
 <b>Kernel:</b> <code>${LINUX_VERSION}</code>
 <b>Branch:</b> <code>${KERNEL_BRANCH}</code>
+<b>NoMount:</b> <code>Enabled</code>
 <b>Tag:</b> <code>${RELEASE}</code>
 <b>Compiler:</b> <code>${COMPILER_STRING}</code>
 

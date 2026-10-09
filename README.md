@@ -1,6 +1,6 @@
 # Automated GKI Kernel Builder
 
-A robust, fully automated CI/CD pipeline for building Android GKI (Generic Kernel Image) kernels, powered by GitHub Actions. This builder supports automated patching for KernelSU-Next and SUSFS, AnyKernel3 packaging, Telegram notifications, and dynamic GitHub Release versioning.
+A robust, fully automated CI/CD pipeline for building Android GKI (Generic Kernel Image) kernels, powered by GitHub Actions. This builder supports automated patching for KernelSU-Next, SUSFS, and NoMount, AnyKernel3 packaging, Telegram notifications, and dynamic GitHub Release versioning.
 
 ## Features
 
