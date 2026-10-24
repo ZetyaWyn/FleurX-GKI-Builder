@@ -30,7 +30,7 @@ RELEASE_REPO="zerotwo-alt/Kitsune-SpiritFox-Release"
 # ==========================================
 # 5. Default Build Options
 # ==========================================
-# Options: Vanilla, ReSukiSU_SUSFS
+# Options: Vanilla, KSUN_SUSFS
 DEFAULT_VARIANT="Vanilla"
 # Options: CI, Release
 DEFAULT_RELEASE_TYPE="CI"
