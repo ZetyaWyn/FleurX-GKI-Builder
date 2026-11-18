@@ -5,7 +5,8 @@ A robust, fully automated CI/CD pipeline for building Android GKI (Generic Kerne
 ## Features
 
 *   **Automated Builds:** Trigger builds manually via GitHub Actions.
-*   **Variant Support:** Choose between `Vanilla` (no root) and `KSUN_SUSFS` (KernelSU-Next + SUSFS) during execution.
+*   **Variant Support:** Choose `Vanilla` (no root) or one of six root implementations, with or without SUSFS: KernelSU (`KSU`), KernelSU-Next (`KSUN`), BakaSU (`BAKASU`), SukiSU-Ultra (`SUKISU`), FinaSU (`FINASU`) and KowSU (`KOWSU`). Add `_SUSFS` for SUSFS, e.g. `KSUN_SUSFS`.
+*   **NTSync:** `CONFIG_NTSYNC` is enabled for every build (the driver is already in the kernel source). Set `ENABLE_NTSYNC="false"` in `config.sh` to turn it off.
 *   **Auto-Versioning:** Automatically increments minor versions (e.g., v1.0 -> v1.1) for official releases, or uses date stamps for CI testing.
 *   **Dynamic Configuration:** Easily switch kernel sources, toolchains, and release targets via a single configuration file without modifying the core build logic.
 *   **Telegram Integration:** Sends build status and the final compiled zip directly to a Telegram chat.
@@ -17,7 +18,21 @@ All non-sensitive variables are located in `config.sh`. Before running your firs
 *   **Project Config:** `KERNEL_NAME`, `KERNEL_SOURCE`, `KERNEL_BRANCH`, `KBUILD_USER`, `KBUILD_HOST`
 *   **Toolchain:** `CLANG_URL` (Direct link to the prebuilt clang tarball)
 *   **Packaging:** `ANYKERNEL_REPO`, `ANYKERNEL_BRANCH`
-*   **Releases:** `RELEASE_REPO` (The repository where official releases will be uploaded, e.g., `username/repo`)
+*   **Releases:** `RELEASE_REPO` (The repository where official releases will be uploaded, e.g., `username/repo`) and `RELEASE_VARIANTS` (the variants built and uploaded together for a `Release`)
+*   **Roots:** `ROOT_<FLAVOR>_REPO`, `_BRANCH` and `_COMMIT`. Leave `_COMMIT` empty to follow the branch tip, or set a full 40-character SHA to pin the build.
+
+### Variants
+
+| Variant | Root | SUSFS hooks come from |
+|---|---|---|
+| `Vanilla` | none | n/a |
+| `KSU` / `KSU_SUSFS` | tiann/KernelSU | SUSFS glue patch `10_enable_susfs_for_ksu` applied to KernelSU |
+| `KSUN` | KernelSU-Next (`dev`) | n/a |
+| `KSUN_SUSFS` | pershoot/KernelSU-Next (`dev-susfs`) | the fork itself |
+| `BAKASU`, `SUKISU`, `FINASU` (+ `_SUSFS`) | BakaSU, SukiSU-Ultra (`builtin`), FinaSU | built into the root; SUSFS options are forced off in the non-SUSFS variant |
+| `KOWSU` / `KOWSU_SUSFS` | KOWX712/KernelSU | SUSFS glue patch, same as KSU |
+
+Only one root is ever added to the kernel. After `make gki_defconfig` the build checks that `CONFIG_NTSYNC`, `CONFIG_KSU` and `CONFIG_KSU_SUSFS` really ended up in `.config`, and stops with a Telegram message if one is missing.
 
 ## Secrets Setup
 

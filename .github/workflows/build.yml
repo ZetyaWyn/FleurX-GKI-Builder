@@ -9,7 +9,18 @@ on:
         type: choice
         options:
           - Vanilla
+          - KSU
+          - KSU_SUSFS
+          - KSUN
           - KSUN_SUSFS
+          - BAKASU
+          - BAKASU_SUSFS
+          - SUKISU
+          - SUKISU_SUSFS
+          - FINASU
+          - FINASU_SUSFS
+          - KOWSU
+          - KOWSU_SUSFS
         default: 'Vanilla'
       release_type:
         description: 'Build Type'
