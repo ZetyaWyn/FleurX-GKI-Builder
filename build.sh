@@ -3,7 +3,7 @@
 #
 # Usage: ./build.sh <VARIANT> <CI|Release>
 #   VARIANT = Vanilla | <ROOT> | <ROOT>_SUSFS
-#   ROOT    = KSU | KSUN | BAKASU | SUKISU | FINASU | KOWSU
+#   ROOT    = KSU | KSUN | BAKASU | SUKISU | FINASU
 
 set -eo pipefail
 
@@ -21,7 +21,7 @@ source config.sh
 # ==========================================
 # Variant handling
 # ==========================================
-ROOT="none"      # none | KSU | KSUN | BAKASU | SUKISU | FINASU | KOWSU
+ROOT="none"      # none | KSU | KSUN | BAKASU | SUKISU | FINASU
 SUSFS=0          # 1 = SUSFS enabled
 
 parse_variant() {
@@ -35,10 +35,10 @@ parse_variant() {
         Vanilla)
             [ "$SUSFS" -eq 0 ] || die "Variant '$v' is invalid: Vanilla has no root to attach SUSFS to."
             ROOT="none" ;;
-        KSU|KSUN|BAKASU|SUKISU|FINASU|KOWSU)
+        KSU|KSUN|BAKASU|SUKISU|FINASU)
             ROOT="$base" ;;
         *)
-            die "Unknown variant '$v'. Use Vanilla, KSU, KSUN, BAKASU, SUKISU, FINASU or KOWSU, optionally with a _SUSFS suffix." ;;
+            die "Unknown variant '$v'. Use Vanilla, KSU, KSUN, BAKASU, SUKISU or FINASU, optionally with a _SUSFS suffix." ;;
     esac
 }
 
@@ -63,7 +63,6 @@ load_root_settings() {
         BAKASU) ROOT_DIR="BakaSU";        ROOT_LABEL="BakaSU" ;;
         SUKISU) ROOT_DIR="SukiSU-Ultra";  ROOT_LABEL="SukiSU-Ultra" ;;
         FINASU) ROOT_DIR="FinaSU";        ROOT_LABEL="FinaSU" ;;
-        KOWSU)  ROOT_DIR="KowSU";         ROOT_LABEL="KowSU" ;;
     esac
 }
 
@@ -118,7 +117,7 @@ setup_root() {
             rm -rf "$p"
         fi
     done
-    rm -rf KernelSU KernelSU-Next BakaSU SukiSU-Ultra FinaSU KowSU
+    rm -rf KernelSU KernelSU-Next BakaSU SukiSU-Ultra FinaSU
 
     echo "-> Cloning ${ROOT_LABEL} (${ROOT_REPO}, ${ROOT_COMMIT:-$ROOT_BRANCH})..."
     # Full history (blobs on demand): the KSU version number counts commits.
@@ -156,7 +155,7 @@ setup_root() {
     fi
 
     # Roots that do not carry SUSFS hooks need the SUSFS glue patch
-    if [ "$SUSFS" -eq 1 ] && { [ "$ROOT" == "KSU" ] || [ "$ROOT" == "KOWSU" ]; }; then
+    if [ "$SUSFS" -eq 1 ] && [ "$ROOT" == "KSU" ]; then
         local ksu_patch="$SUSFS_DIR/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch"
         [ -f "$ksu_patch" ] || die "SUSFS repo has no $ksu_patch (needed for ${ROOT_LABEL})"
         echo "-> Applying SUSFS glue patch to ${ROOT_LABEL}..."

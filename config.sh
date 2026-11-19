@@ -37,14 +37,13 @@ RELEASE_REPO="zerotwo-alt/Kitsune-SpiritFox-Release"
 #   BAKASU   BakaSU
 #   SUKISU   SukiSU-Ultra
 #   FINASU   FinaSU
-#   KOWSU    KowSU
 # Examples: Vanilla, KSUN, KSUN_SUSFS, BAKASU_SUSFS
 DEFAULT_VARIANT="Vanilla"
 # Options: CI, Release
 DEFAULT_RELEASE_TYPE="CI"
 # Variants built (and uploaded together) when the build type is Release:
 # one Vanilla zip plus one zip per root manager, all with SUSFS
-RELEASE_VARIANTS=("Vanilla" "KSUN_SUSFS" "KSU_SUSFS" "BAKASU_SUSFS" "SUKISU_SUSFS" "FINASU_SUSFS" "KOWSU_SUSFS")
+RELEASE_VARIANTS=("Vanilla" "KSUN_SUSFS" "KSU_SUSFS" "BAKASU_SUSFS" "SUKISU_SUSFS" "FINASU_SUSFS")
 
 # ==========================================
 # 6. Kernel features
@@ -83,7 +82,3 @@ ROOT_SUKISU_COMMIT=""
 ROOT_FINASU_REPO="https://github.com/LyraVoid/FinaSU"
 ROOT_FINASU_BRANCH="master"
 ROOT_FINASU_COMMIT=""
-
-ROOT_KOWSU_REPO="https://github.com/KOWX712/KernelSU"
-ROOT_KOWSU_BRANCH="master"
-ROOT_KOWSU_COMMIT=""

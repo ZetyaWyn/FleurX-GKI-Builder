@@ -19,8 +19,6 @@ on:
           - SUKISU_SUSFS
           - FINASU
           - FINASU_SUSFS
-          - KOWSU
-          - KOWSU_SUSFS
         default: 'Vanilla'
       release_type:
         description: 'Build Type'
