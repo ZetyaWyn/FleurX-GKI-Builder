@@ -260,6 +260,70 @@ verify_config() {
 }
 
 # ==========================================
+# Release notes
+# ==========================================
+# Collected while building (one entry per variant)
+RELEASE_ROOT_ROWS=()     # root table rows
+SUSFS_COLS=()            # SUSFS table column headers
+SUSFS_CELLS=()           # SUSFS table cells (same order as SUSFS_COLS)
+NOMOUNT_COMMIT=""
+SUSFS_COMMIT=""
+SUSFS_VERSION_SEEN=""
+
+# Writes the release page text to $1, in the same layout the Wild Kernels use:
+# root table, feature list, SUSFS commits, then the assets listed by GitHub.
+render_release_notes() {
+    local out="$1" i
+    {
+        echo "# ${KERNEL_NAME} for GKI2 Devices"
+        echo
+        echo "**Kernel:** \`${LINUX_VERSION}\` (${KERNEL_BRANCH}) · **Compiler:** \`${COMPILER_STRING}\`"
+        echo
+        echo "> [!WARNING]"
+        echo "> Back up your boot image before flashing, and report what breaks."
+        echo
+
+        if [ "${#RELEASE_ROOT_ROWS[@]}" -gt 0 ]; then
+            echo "## Root"
+            echo
+            echo "| Root | Version | Commit |"
+            echo "|------|---------|--------|"
+            printf '%s\n' "${RELEASE_ROOT_ROWS[@]}"
+            echo
+        fi
+
+        echo "## Features"
+        echo
+        [ -n "$SUSFS_VERSION_SEEN" ] && echo "- SUSFS ${SUSFS_VERSION_SEEN}"
+        if [ -n "$NOMOUNT_COMMIT" ]; then
+            echo "- NoMount [\`${NOMOUNT_COMMIT}\`](https://github.com/maxsteeel/nomount/commit/${NOMOUNT_COMMIT})"
+        fi
+        [ "$ENABLE_NTSYNC" == "true" ] && echo "- NTSync"
+        for v in "${VARIANTS[@]}"; do
+            [ "$v" == "Vanilla" ] && { echo "- Vanilla build (no root) included"; break; }
+        done
+        echo
+
+        if [ "${#SUSFS_COLS[@]}" -gt 0 ]; then
+            echo "## SUSFS commits"
+            echo
+            local head="| SUSFS branch |" sep="|--------------|" row="| ${SUSFS_BRANCH} |"
+            for ((i = 0; i < ${#SUSFS_COLS[@]}; i++)); do
+                head+=" ${SUSFS_COLS[$i]} |"
+                sep+="---|"
+                row+=" ${SUSFS_CELLS[$i]} |"
+            done
+            echo "$head"
+            echo "$sep"
+            echo "$row"
+            echo
+        fi
+
+        echo "Flash the AnyKernel3 zip that matches your root manager from the assets below."
+    } > "$out"
+}
+
+# ==========================================
 # Main
 # ==========================================
 main() {
@@ -326,7 +390,6 @@ main() {
     k_lastcommit=$(git rev-parse --short HEAD)
 
     ZIP_FILES=()
-    RELEASE_LINES=()
 
     for VARIANT in "${VARIANTS[@]}"; do
         echo "-> Building Variant: $VARIANT"
@@ -346,6 +409,7 @@ main() {
         echo "-> Setting up NoMount..."
         curl -fsSL https://raw.githubusercontent.com/maxsteeel/nomount/refs/heads/dev/kernel/setup.sh | bash - \
             || fail_build "NoMount setup"
+        NOMOUNT_COMMIT=$(git -C NoMount rev-parse --short=7 HEAD 2>/dev/null || echo "")
 
         # SUSFS (kernel side) comes before the root, because some roots need
         # the SUSFS repo for their own glue patch.
@@ -353,7 +417,9 @@ main() {
             echo "-> Setting up SUSFS..."
             susfs_fetch || fail_build "SUSFS download"
             susfs_kernel_patch || fail_build "SUSFS kernel patch"
+            SUSFS_COMMIT=$(git -C "$SUSFS_DIR" rev-parse --short=7 HEAD 2>/dev/null || echo "")
             SUSFS_VERSION=$(grep -E '^#define SUSFS_VERSION' ./include/linux/susfs.h | cut -d' ' -f3 | sed 's/"//g')
+            SUSFS_VERSION_SEEN="$SUSFS_VERSION"
         else
             SUSFS_VERSION="None"
         fi
@@ -364,6 +430,16 @@ main() {
             setup_root
             root_configs
             ROOT_INFO="${ROOT_LABEL} @ ${ROOT_COMMIT_USED:0:9}"
+            # Version shown by the manager = 30000 + number of commits
+            ROOT_VERSION=$((30000 + $(git -C "$ROOT_DIR" rev-list --count HEAD)))
+            ROOT_ROW_LABEL="$ROOT_LABEL"
+            if [ "$ROOT" == "KSUN" ] && [ "$SUSFS" -eq 1 ]; then ROOT_ROW_LABEL="KernelSU-Next (SUSFS fork)"; fi
+            ROOT_COMMIT_URL="${ROOT_REPO%.git}/commit/${ROOT_COMMIT_USED}"
+            RELEASE_ROOT_ROWS+=("| ${ROOT_ROW_LABEL} | ${ROOT_VERSION} | [\`${ROOT_COMMIT_USED:0:7}\`](${ROOT_COMMIT_URL}) |")
+            if [ "$SUSFS" -eq 1 ]; then
+                SUSFS_COLS+=("${ROOT_ROW_LABEL}")
+                SUSFS_CELLS+=("${SUSFS_VERSION} ( [\`${SUSFS_COMMIT}\`](https://gitlab.com/simonpunk/susfs4ksu/-/commit/${SUSFS_COMMIT}) )")
+            fi
         else
             ROOT_INFO="None"
         fi
@@ -431,6 +507,7 @@ main() {
             git clone --depth=1 -b "$ANYKERNEL_BRANCH" "$ANYKERNEL_REPO" AnyKernel3
         fi
 
+        # Same naming as your existing releases, e.g. Kitsune-SpiritFox-v1.18-5.10.272-KSUN_SUSFS.zip
         AK3_ZIP_NAME="${KERNEL_NAME}-${RELEASE}-${LINUX_VERSION}-${VARIANT}.zip"
         sed -i "s/kernel.string=.*/kernel.string=${KERNEL_NAME} ${RELEASE} ${LINUX_VERSION} ${VARIANT}/g" AnyKernel3/anykernel.sh
         sed -i "s/supported_kver=.*/supported_kver='5.10'/g" AnyKernel3/anykernel.sh
@@ -440,7 +517,6 @@ main() {
 
         (cd AnyKernel3 && zip -r9 "../${AK3_ZIP_NAME}" * -x .git README.md '*placeholder')
         ZIP_FILES+=("${AK3_ZIP_NAME}")
-        RELEASE_LINES+=("- \`${VARIANT}\`: root ${ROOT_INFO}, SUSFS ${SUSFS_VERSION}")
 
         # Set proper caption based on Build Type
         if [ "$RELEASE_TYPE" == "Release" ]; then
@@ -470,11 +546,12 @@ EOF
     # Release (upload all variants to the same release)
     if [ "$RELEASE_TYPE" == "Release" ]; then
         echo "-> Creating GitHub Release..."
-        NOTES=$(printf 'GKI Kernel Release for %s\n\n%s\n' "${LINUX_VERSION}" "$(printf '%s\n' "${RELEASE_LINES[@]}")")
+        NOTES_FILE="$WORKDIR/RELEASE_NOTES.md"
+        render_release_notes "$NOTES_FILE"
         gh release create "${RELEASE}" "${ZIP_FILES[@]}" \
             --repo "$RELEASE_REPO" \
             --title "${KERNEL_NAME} ${RELEASE}" \
-            --notes "$NOTES"
+            --notes-file "$NOTES_FILE"
 
         # Send final announcement to Telegram with Link
         RELEASE_URL="https://github.com/${RELEASE_REPO}/releases/tag/${RELEASE}"

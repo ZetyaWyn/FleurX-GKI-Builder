@@ -18,7 +18,7 @@ All non-sensitive variables are located in `config.sh`. Before running your firs
 *   **Project Config:** `KERNEL_NAME`, `KERNEL_SOURCE`, `KERNEL_BRANCH`, `KBUILD_USER`, `KBUILD_HOST`
 *   **Toolchain:** `CLANG_URL` (Direct link to the prebuilt clang tarball)
 *   **Packaging:** `ANYKERNEL_REPO`, `ANYKERNEL_BRANCH`
-*   **Releases:** `RELEASE_REPO` (The repository where official releases will be uploaded, e.g., `username/repo`) and `RELEASE_VARIANTS` (the variants built and uploaded together for a `Release`)
+*   **Releases:** `RELEASE_REPO` (The repository where official releases will be uploaded, e.g., `username/repo`) and `RELEASE_VARIANTS` (the variants built and uploaded together for a `Release`; default: one `Vanilla` zip plus one SUSFS zip for each of the six root managers)
 *   **Roots:** `ROOT_<FLAVOR>_REPO`, `_BRANCH` and `_COMMIT`. Leave `_COMMIT` empty to follow the branch tip, or set a full 40-character SHA to pin the build.
 
 ### Variants
@@ -69,3 +69,16 @@ chmod +x build.sh
 ./build.sh <VARIANT> <RELEASE_TYPE>
 # Example: ./build.sh KSUN_SUSFS CI
 ```
+
+
+### Release page
+
+A `Release` build publishes one GitHub release with one AnyKernel3 zip per variant and generates the page text itself:
+
+*   **Root**: each root's name, version (30000 + commit count, the number the manager shows) and a link to its commit.
+*   **Features**: SUSFS version, NoMount commit, NTSync.
+*   **SUSFS commits**: the SUSFS version and commit for each root, under the `gki-android12-5.10` branch.
+
+Zips keep the existing naming, e.g. `Kitsune-SpiritFox-v1.18-5.10.272-KSUN_SUSFS.zip` and `...-Vanilla.zip`, so the release shows one zip per root manager.
+
+To publish everything in one go: run the workflow with **release_type = Release**. The `variant` choice is ignored for a Release; it builds every entry in `RELEASE_VARIANTS` one after another and uploads them all to `RELEASE_REPO`. A failed variant stops the run before anything is published.

@@ -7,8 +7,8 @@
 KERNEL_NAME="Kitsune-SpiritFox"
 KERNEL_SOURCE="https://github.com/ZetyaWyn/android_kernel_common-5.10"
 KERNEL_BRANCH="android12-5.10"
-KBUILD_USER="ZetyaWyn"
-KBUILD_HOST="ZetyaWyn"
+KBUILD_USER="zerotwo"
+KBUILD_HOST="ZeroTwo"
 TIMEZONE="Asia/Kolkata"
 
 # ==========================================
@@ -25,7 +25,7 @@ CLANG_URL="https://github.com/Neutron-Toolchains/clang-build-catalogue/releases/
 # ==========================================
 # 4. GitHub Release Configuration
 # ==========================================
-RELEASE_REPO="ZetyaWyn/Kitsune-SpiritFox-Release"
+RELEASE_REPO="zerotwo-alt/Kitsune-SpiritFox-Release"
 
 # ==========================================
 # 5. Default Build Options
@@ -42,8 +42,9 @@ RELEASE_REPO="ZetyaWyn/Kitsune-SpiritFox-Release"
 DEFAULT_VARIANT="Vanilla"
 # Options: CI, Release
 DEFAULT_RELEASE_TYPE="CI"
-# Variants built (and uploaded together) when the build type is Release
-RELEASE_VARIANTS=("Vanilla" "KSUN_SUSFS")
+# Variants built (and uploaded together) when the build type is Release:
+# one Vanilla zip plus one zip per root manager, all with SUSFS
+RELEASE_VARIANTS=("Vanilla" "KSUN_SUSFS" "KSU_SUSFS" "BAKASU_SUSFS" "SUKISU_SUSFS" "FINASU_SUSFS" "KOWSU_SUSFS")
 
 # ==========================================
 # 6. Kernel features
