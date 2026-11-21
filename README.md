@@ -5,7 +5,7 @@ A robust, fully automated CI/CD pipeline for building Android GKI (Generic Kerne
 ## Features
 
 *   **Automated Builds:** Trigger builds manually via GitHub Actions.
-*   **Variant Support:** Choose `Vanilla` (no root) or one of five root implementations, with or without SUSFS: KernelSU (`KSU`), KernelSU-Next (`KSUN`), BakaSU (`BAKASU`), SukiSU-Ultra (`SUKISU`), and FinaSU (`FINASU`). Add `_SUSFS` for SUSFS, e.g. `KSUN_SUSFS`.
+*   **Variant Support:** Choose `Vanilla` (no root) or one of five root implementations, with or without SUSFS: KernelSU (`KSU`), KernelSU-Next (`KSUN`), BakaSU (`BAKASU`), SukiSU-Nova (`SUKISU`), and FinaSU (`FINASU`). Add `_SUSFS` for SUSFS, e.g. `KSUN_SUSFS`.
 *   **NTSync:** `CONFIG_NTSYNC` is enabled for every build (the driver is already in the kernel source). Set `ENABLE_NTSYNC="false"` in `config.sh` to turn it off.
 *   **Auto-Versioning:** Automatically increments minor versions (e.g., v1.0 -> v1.1) for official releases, or uses date stamps for CI testing.
 *   **Dynamic Configuration:** Easily switch kernel sources, toolchains, and release targets via a single configuration file without modifying the core build logic.
@@ -29,7 +29,7 @@ All non-sensitive variables are located in `config.sh`. Before running your firs
 | `KSU` / `KSU_SUSFS` | tiann/KernelSU | SUSFS glue patch `10_enable_susfs_for_ksu` applied to KernelSU |
 | `KSUN` | KernelSU-Next (`dev`) | n/a |
 | `KSUN_SUSFS` | pershoot/KernelSU-Next (`dev-susfs`) | the fork itself |
-| `BAKASU`, `SUKISU`, `FINASU` (+ `_SUSFS`) | BakaSU, SukiSU-Ultra (`builtin`), FinaSU | built into the root; SUSFS options are forced off in the non-SUSFS variant |
+| `BAKASU`, `SUKISU`, `FINASU` (+ `_SUSFS`) | BakaSU, SukiSU-Nova (`builtin`), FinaSU | built into the root; SUSFS options are forced off in the non-SUSFS variant |
 
 Only one root is ever added to the kernel. After `make gki_defconfig` the build checks that `CONFIG_NTSYNC`, `CONFIG_KSU` and `CONFIG_KSU_SUSFS` really ended up in `.config`, and stops with a Telegram message if one is missing.
 

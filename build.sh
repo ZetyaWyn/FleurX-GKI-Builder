@@ -61,7 +61,7 @@ load_root_settings() {
         KSU)    ROOT_DIR="KernelSU";      ROOT_LABEL="KernelSU" ;;
         KSUN)   ROOT_DIR="KernelSU-Next"; ROOT_LABEL="KernelSU-Next" ;;
         BAKASU) ROOT_DIR="BakaSU";        ROOT_LABEL="BakaSU" ;;
-        SUKISU) ROOT_DIR="SukiSU-Ultra";  ROOT_LABEL="SukiSU-Ultra" ;;
+        SUKISU) ROOT_DIR="SukiSU-Nova";   ROOT_LABEL="SukiSU-Nova" ;;
         FINASU) ROOT_DIR="FinaSU";        ROOT_LABEL="FinaSU" ;;
     esac
 }
@@ -117,7 +117,7 @@ setup_root() {
             rm -rf "$p"
         fi
     done
-    rm -rf KernelSU KernelSU-Next BakaSU SukiSU-Ultra FinaSU
+    rm -rf KernelSU KernelSU-Next BakaSU SukiSU-Ultra SukiSU-Nova FinaSU
 
     echo "-> Cloning ${ROOT_LABEL} (${ROOT_REPO}, ${ROOT_COMMIT:-$ROOT_BRANCH})..."
     # Full history (blobs on demand): the KSU version number counts commits.

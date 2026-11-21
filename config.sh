@@ -35,7 +35,7 @@ RELEASE_REPO="zerotwo-alt/Kitsune-SpiritFox-Release"
 #   KSU      tiann/KernelSU
 #   KSUN     KernelSU-Next
 #   BAKASU   BakaSU
-#   SUKISU   SukiSU-Ultra
+#   SUKISU   SukiSU-Nova (formerly SukiSU-Ultra)
 #   FINASU   FinaSU
 # Examples: Vanilla, KSUN, KSUN_SUSFS, BAKASU_SUSFS
 DEFAULT_VARIANT="Vanilla"
@@ -75,7 +75,7 @@ ROOT_BAKASU_BRANCH="main"
 ROOT_BAKASU_COMMIT=""
 
 # 'builtin' is the branch meant to be compiled into the kernel
-ROOT_SUKISU_REPO="https://github.com/SukiSU-Ultra/SukiSU-Ultra"
+ROOT_SUKISU_REPO="https://github.com/SukiSU-Nova/SukiSU-Nova"
 ROOT_SUKISU_BRANCH="builtin"
 ROOT_SUKISU_COMMIT=""
 
